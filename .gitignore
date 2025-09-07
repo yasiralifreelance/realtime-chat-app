@@ -1,0 +1,6 @@
+node_modules/ 
+package-lock.json 
+filestructure 
+.next/ 
+.env.local
+git-push-comm
