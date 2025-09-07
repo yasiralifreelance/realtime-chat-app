@@ -105,9 +105,12 @@ function handleMessage(clientId, data) {
     type: 'message',
     id: uuidv4(),
     username: client.username,
-    message: data.message,
+    message: data.message || '',
     timestamp: new Date().toISOString(),
-    userId: clientId
+    userId: clientId,
+    isVoice: data.isVoice || false,
+    voiceData: data.voiceData || null,
+    voiceDuration: data.voiceDuration || null
   };
 
   broadcastToRoom(client.room, messageData);

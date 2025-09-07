@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 // Add this at the very top of the file:
 declare global {
@@ -22,6 +22,7 @@ export const useVoiceActivity = ({
 }: UseVoiceActivityOptions = {}) => {
   const [isActive, setIsActiveState] = useState(false);
   const [isSupported, setIsSupported] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(false);
   const currentIsActive = useRef(false);
   const mediaStream = useRef<MediaStream | null>(null);
   const audioContext = useRef<AudioContext | null>(null);
@@ -132,6 +133,7 @@ export const useVoiceActivity = ({
 
       // Start monitoring
       monitor();
+      setIsEnabled(true);
       console.log('Voice monitoring started');
 
     } catch (error) {
@@ -158,6 +160,7 @@ export const useVoiceActivity = ({
 
     analyser.current = null;
     dataArray.current = null;
+    setIsEnabled(false);
     
     // Reset both state and ref
     if (currentIsActive.current) {
@@ -165,6 +168,16 @@ export const useVoiceActivity = ({
       onActivityChange?.(false);
     }
   };
+
+  const toggleVoiceActivity = useCallback(async () => {
+    if (!isSupported) return;
+
+    if (isEnabled) {
+      stopListening();
+    } else {
+      await startListening();
+    }
+  }, [isEnabled, isSupported]);
 
   useEffect(() => {
     return () => {
@@ -174,8 +187,10 @@ export const useVoiceActivity = ({
 
   return {
     isActive,
+    isEnabled,
     isSupported,
     startListening,
-    stopListening
+    stopListening,
+    toggleVoiceActivity
   };
 };

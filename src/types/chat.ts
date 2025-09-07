@@ -11,6 +11,9 @@ export interface Message {
   timestamp: string;
   userId?: string;
   isSystem?: boolean;
+  isVoice?: boolean;
+  voiceData?: string; // Base64 encoded audio data
+  voiceDuration?: number; // Duration in seconds
 }
 
 export interface WebSocketMessage {

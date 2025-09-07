@@ -28,6 +28,26 @@ export const useChat = ({ websocketUrl, username, room }: UseChatOptions) => {
     }
   }, [isConnected, sendMessage]);
 
+  const sendVoiceMessage = useCallback(async (audioBlob: Blob, duration: number) => {
+    if (!isConnected) return;
+
+    // Convert blob to base64
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64Data = reader.result?.toString().split(',')[1];
+      if (base64Data) {
+        sendMessage({
+          type: 'message',
+          isVoice: true,
+          voiceData: base64Data,
+          voiceDuration: duration,
+          message: `🎤 Voice message (${Math.round(duration)}s)`
+        });
+      }
+    };
+    reader.readAsDataURL(audioBlob);
+  }, [isConnected, sendMessage]);
+
   const { isActive: isVoiceActive, isSupported: isVoiceSupported, startListening, stopListening } = useVoiceActivity({
     threshold: 0.1,
     onActivityChange: handleVoiceActivity
@@ -114,6 +134,7 @@ export const useChat = ({ websocketUrl, username, room }: UseChatOptions) => {
     isVoiceEnabled,
     isVoiceSupported,
     sendMessage: sendChatMessage,
+    sendVoiceMessage,
     toggleVoiceActivity
   };
 };

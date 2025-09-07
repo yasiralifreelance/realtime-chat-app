@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { Message } from '@/types/chat';
+import { VoicePlayer } from './VoicePlayer';
 
 interface MessageListProps {
   messages: Message[];
@@ -48,9 +49,25 @@ export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
                 <span className="text-xs text-gray-500">
                   {formatTime(message.timestamp)}
                 </span>
+                {message.isVoice && (
+                  <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">
+                    🎤 Voice
+                  </span>
+                )}
               </div>
-              <div className="bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
-                <p className="text-gray-800 break-words">{message.message}</p>
+              <div className={`${
+                message.isVoice 
+                  ? '' 
+                  : 'bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm'
+              }`}>
+                {message.isVoice && message.voiceData && message.voiceDuration ? (
+                  <VoicePlayer 
+                    audioData={message.voiceData} 
+                    duration={message.voiceDuration} 
+                  />
+                ) : (
+                  <p className="text-gray-800 break-words">{message.message}</p>
+                )}
               </div>
             </div>
           )}

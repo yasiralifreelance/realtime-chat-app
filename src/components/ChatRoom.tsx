@@ -26,6 +26,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
     isVoiceEnabled,
     isVoiceSupported,
     sendMessage,
+    sendVoiceMessage,
     toggleVoiceActivity
   } = useChat({ websocketUrl, username, room });
 
@@ -58,14 +59,6 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
                 )}
                 <span>{isConnected ? 'Connected' : 'Disconnected'}</span>
               </div>
-              
-              {/* Voice Activity */}
-              <VoiceIndicator
-                isActive={isVoiceActive}
-                isEnabled={isVoiceEnabled}
-                isSupported={isVoiceSupported}
-                onToggle={toggleVoiceActivity}
-              />
             </div>
           </div>
         </div>
@@ -76,6 +69,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
         {/* Message Input */}
         <MessageInput
           onSendMessage={sendMessage}
+          onSendVoiceMessage={sendVoiceMessage}
           disabled={!isConnected}
         />
       </div>
